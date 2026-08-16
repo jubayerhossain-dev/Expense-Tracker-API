@@ -73,5 +73,27 @@ def test_Transaction_Update():
 
 
 
+def test_Delete_Transaction_ID():
 
+    db = sessionlocal()
+    
+    #remove------
+    db.query(TransactionTable).filter(TransactionTable.id == 999).delete()
+    db.commit()
 
+    transaction = TransactionTable(
+                id = 999,
+                title = 'Testing',
+                amount = 435,
+                type = 'Testing',
+                category = 'Testing',
+                date = date(2026, 8, 16),
+                owner_id = 1
+        )
+    db.add(transaction)
+    db.commit()
+    db.close()
+    
+    response = client.delete('/transactions/999')
+    assert response.status_code == status.HTTP_200_OK
+    assert response.json() == 'Transaction Data Delete Successful.'
